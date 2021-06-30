@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Blog</title>
+</head>
+<body>
+  <div class="container">
+     <!--kontent-->
+            <h1 class="mb-1"><%= article.title %></h1>
+            <div class="text-muted mb-2">
+            <%= article.createdAt.toLocaleDateString() %>
+            </div>
+            <a href="/" class="btn btn-secondary">All Articles</a>
+            <a href="/articles/edit/<%= article.id %>" class="btn btn-info">Edit</a>
+
+            <div>
+            <%- article.sanitizedHtml %>
+            </div>
+    <!-- Coment-->
+    <div class="card my-4">
+        <h5 class="card-header">Leave a Comment:</h5>
+        <div class="card-body">
+            <form method="POST" onsubmit="return doCommet(this);">
+                <input type="hidden" name="article_id" value="<%= article._id %>" />
+                <div class="form-group">
+                    <textarea class="form-control" name="comment" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-info">Add</button>
+          
+            </form>
+        </div>
+    </div>
+    <script>
+
+   
+    function doCommet(form){
+        $.ajax({
+            url:"/articles/do-comment",
+            method :"POST",
+            data:{
+                comment:form.comment.value,
+                id:form.article_id.value,
+                success:function(response){
+                    alert(response);
+                }
+            }
+        });
+        return false;
+    }
+</script>
+    <!-- Comments user-->
+   
+    <% article.comments.forEach(function(comment) { %>
+    <div class="card my-4">
+       
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-group">
+                    <textarea class="form-control" rows="2" readonly><%= comment.comment%></textarea>
+                </div>
+                <a href="" class="btn btn-info">Delete</a>
+                <a href="" class="btn btn-info">Edit</a>
+          
+            </form>
+        </div>
+    </div>
+    <% }) %>
+
+  </div>
+  
+
+</body>
+</html>
